@@ -1,0 +1,80 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ai-learning-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - VITE_API_URL=http://localhost:8000/api/v1
+      - VITE_APP_NAME=AI Learning Platform
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - ai-learning-network
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ai-learning-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=development
+      - DEBUG=true
+      - HOST=0.0.0.0
+      - PORT=8000
+      - BACKEND_CORS_ORIGINS=["http://localhost:3000","http://localhost:5173"]
+      - AZURE_OPENAI_API_KEY=${AZURE_OPENAI_API_KEY}
+      - AZURE_OPENAI_ENDPOINT=${AZURE_OPENAI_ENDPOINT}
+      - AZURE_OPENAI_DEPLOYMENT=${AZURE_OPENAI_DEPLOYMENT}
+      - AZURE_OPENAI_API_VERSION=${AZURE_OPENAI_API_VERSION}
+    volumes:
+      - ./backend:/app
+    networks:
+      - ai-learning-network
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # Optional: Add Redis for caching
+  redis:
+    image: redis:7-alpine
+    container_name: ai-learning-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - ai-learning-network
+    command: redis-server --appendonly yes
+
+  # Optional: Add PostgreSQL for persistence
+  postgres:
+    image: postgres:15-alpine
+    container_name: ai-learning-db
+    environment:
+      - POSTGRES_USER=ailearning
+      - POSTGRES_PASSWORD=ailearning123
+      - POSTGRES_DB=ailearning
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - ai-learning-network
+
+networks:
+  ai-learning-network:
+    driver: bridge
+
+volumes:
+  redis_data:
+  postgres_data:

@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     # Azure OpenAI
     AZURE_OPENAI_API_KEY: str = Field("", env="AZURE_OPENAI_API_KEY")
     AZURE_OPENAI_ENDPOINT: str = Field("", env="AZURE_OPENAI_ENDPOINT")
-    AZURE_OPENAI_DEPLOYMENT: str = Field("gpt-4.5", env="AZURE_OPENAI_DEPLOYMENT")
+    AZURE_OPENAI_DEPLOYMENT: str = Field("gpt-4.1", env="AZURE_OPENAI_DEPLOYMENT")
     AZURE_OPENAI_API_VERSION: str = Field(
         "2024-02-15-preview",
         env="AZURE_OPENAI_API_VERSION"

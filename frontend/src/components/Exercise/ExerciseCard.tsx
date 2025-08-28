@@ -1,3 +1,4 @@
+// frontend/src/components/Exercise/ExerciseCard.tsx
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
@@ -342,4 +343,5 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
   );
 };
 
+// Add default export
 export default ExerciseCard;

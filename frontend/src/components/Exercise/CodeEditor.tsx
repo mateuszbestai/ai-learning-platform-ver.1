@@ -1,3 +1,4 @@
+// frontend/src/components/Exercise/CodeEditor.tsx
 import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 
@@ -90,4 +91,5 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
   );
 };
 
+// Add default export
 export default CodeEditor;

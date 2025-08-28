@@ -1,65 +1,26 @@
-import api from './api';
-
-export interface ExerciseSubmission {
-  exercise_id: string;
-  solution: string;
-  language?: string;
-  time_spent: number; // Changed from timeSpent
-}
-
-export interface ExerciseResult {
-  passed: boolean;
-  test_results: Array<{
-    name: string;
-    passed: boolean;
-    error?: string;
-  }>;
-  feedback: string;
-  points_earned: number;
-}
-
 export const exerciseService = {
-  // Get exercise by ID
-  getById: async (exerciseId: string): Promise<any> => {
-    const response = await api.get(`/exercise/${exerciseId}`);
-    return response.data;
-  },
-
-  // Submit exercise solution
-  submit: async (
-    exerciseId: string,
-    submission: ExerciseSubmission
-  ): Promise<ExerciseResult> => {
-    const response = await api.post<ExerciseResult>(
-      `/exercise/${exerciseId}/submit`,
-      submission
-    );
-    return response.data;
-  },
-
-  // Run tests (for immediate feedback)
-  runTests: async (
-    exerciseId: string,
-    code: string,
-    language: string = 'javascript'
-  ): Promise<any> => {
-    const response = await api.post(`/exercise/${exerciseId}/test`, {
-      code,
-      language,
+  // Generate new exercise with AI
+  generateExercise: async (topic: string, type: string, difficulty: string): Promise<any> => {
+    const response = await api.post('/exercise/generate', {
+      topic,
+      exercise_type: type,
+      difficulty
     });
     return response.data;
   },
 
-  // Get hints for exercise
-  getHints: async (exerciseId: string, hintLevel: number = 1): Promise<string[]> => {
-    const response = await api.get(`/exercise/${exerciseId}/hints`, {
-      params: { level: hintLevel },
-    });
-    return response.data.hints;
+  // AI evaluation of submission
+  evaluateSubmission: async (exerciseId: string, submission: any): Promise<any> => {
+    const response = await api.post(`/exercise/${exerciseId}/evaluate`, submission);
+    return response.data;
   },
 
-  // Save progress (auto-save)
-  saveProgress: async (exerciseId: string, code: string): Promise<void> => {
-    await api.post(`/exercise/${exerciseId}/save`, { code });
+  // Get AI hint
+  getHint: async (exerciseId: string, currentCode: string, hintLevel: number): Promise<string> => {
+    const response = await api.post(`/exercise/${exerciseId}/hint`, {
+      current_code: currentCode,
+      hint_level: hintLevel
+    });
+    return response.data.hint;
   },
 };

@@ -30,7 +30,7 @@ class Settings(BaseSettings):
     AZURE_OPENAI_ENDPOINT: str = Field("", env="AZURE_OPENAI_ENDPOINT")
     AZURE_OPENAI_DEPLOYMENT: str = Field("gpt-4.1", env="AZURE_OPENAI_DEPLOYMENT")
     AZURE_OPENAI_API_VERSION: str = Field(
-        "2024-02-15-preview",
+        "2024-06-01",
         env="AZURE_OPENAI_API_VERSION"
     )
     

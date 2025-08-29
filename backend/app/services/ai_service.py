@@ -19,7 +19,7 @@ class AIService:
         """Initialize Azure OpenAI client"""
         self.client = AzureOpenAI(
             api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-            api_version=os.getenv("AZURE_OPENAI_API_VERSION", "2024-02-15-preview"),
+            api_version=os.getenv("AZURE_OPENAI_API_VERSION", "2024-06-01"),
             azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
         )
         self.deployment = os.getenv("AZURE_OPENAI_DEPLOYMENT", "gpt-4.1")
@@ -133,7 +133,8 @@ class AIService:
             )
             
             result = json.loads(response.choices[0].message.content)
-            
+            #result = response.choices[0].message.content
+
             # Add IDs and metadata
             result["id"] = f"path_{uuid.uuid4().hex[:8]}"
             result["created_at"] = datetime.utcnow().isoformat()
@@ -209,6 +210,7 @@ class AIService:
                 ],
                 temperature=0.7,
                 max_tokens=2000
+                #response_format={"type": "json_object"}
             )
             
             content = response.choices[0].message.content
@@ -291,7 +293,7 @@ class AIService:
                 response_format={"type": "json_object"}
             )
             
-            evaluation = json.loads(response.choices[0].message.content)
+            evaluation = json.loads(response.choices[0].message.content )
             evaluation["evaluated_at"] = datetime.utcnow().isoformat()
             evaluation["exercise_id"] = exercise.get("id")
             
